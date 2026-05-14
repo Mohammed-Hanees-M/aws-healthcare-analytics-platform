@@ -53,16 +53,9 @@ VITAL_FEATURES = [
 
 def get_db_connection():
     db_url = os.environ.get('DATABASE_URL')
-    if db_url:
-        return psycopg2.connect(db_url)
-    return psycopg2.connect(
-        host=os.environ.get('DB_HOST'),
-        port=os.environ.get('DB_PORT'),
-        dbname=os.environ.get('DB_NAME'),
-        user=os.environ.get('DB_USER'),
-        password=os.environ.get('DB_PASSWORD'),
-        sslmode='require' if os.environ.get('NODE_ENV') == 'production' else 'prefer'
-    )
+    if not db_url:
+        raise ValueError("DATABASE_URL must be set in environment")
+    return psycopg2.connect(db_url)
 
 
 def load_model_from_s3():

@@ -15,9 +15,9 @@ _cfg = dotenv_values(_env_path)
 # Database connection
 db_url = _cfg.get('DATABASE_URL') or os.environ.get('DATABASE_URL')
 
-    if not db_url:
-        raise ValueError("DATABASE_URL must be set in environment")
-    conn = psycopg2.connect(db_url)
+if not db_url:
+    raise ValueError("DATABASE_URL must be set in environment")
+conn = psycopg2.connect(db_url)
 
 print("✅ Connected to database")
 

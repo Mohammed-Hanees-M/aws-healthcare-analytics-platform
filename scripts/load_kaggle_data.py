@@ -29,7 +29,6 @@ try:
 DB_URL = os.environ.get('DATABASE_URL')
 if not DB_URL:
     raise ValueError("DATABASE_URL must be set in environment")
-DB_CONFIG = {}
 
 WARDS = ['ICU', 'Cardiology', 'Oncology', 'Pediatrics', 'Emergency', 'General', 'Neurology', 'Orthopedics']
 PHYSICIANS = ['Dr. Sarah Chen', 'Dr. James Wilson', 'Dr. Priya Patel', 'Dr. Michael Lee', 'Dr. Anna Rodriguez']
@@ -38,9 +37,7 @@ LAST_NAMES = ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Mille
 
 
 def get_conn():
-    if DB_URL:
-        return psycopg2.connect(DB_URL)
-    return psycopg2.connect(**DB_CONFIG)
+    return psycopg2.connect(DB_URL)
 
 
 def download_kaggle_dataset(dataset: str, dest: str):

@@ -90,15 +90,9 @@ def load_from_db() -> pd.DataFrame:
     load_dotenv('../backend/.env')
 
     db_url = os.environ.get('DATABASE_URL')
-    if db_url:
-        conn = psycopg2.connect(db_url)
-    else:
-        conn = psycopg2.connect(
-            host=os.environ.get('DB_HOST'),
-            dbname=os.environ.get('DB_NAME'),
-            user=os.environ.get('DB_USER'),
-            password=os.environ.get('DB_PASSWORD')
-        )
+    if not db_url:
+        raise ValueError("DATABASE_URL must be set in environment")
+    conn = psycopg2.connect(db_url)
     query = f"""
         SELECT {', '.join(VITAL_FEATURES)}, is_anomaly
         FROM vital_records
