@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid,
-  Tooltip, Legend, ResponsiveContainer, ReferenceLine
+  Tooltip, ResponsiveContainer
 } from 'recharts';
 import { format } from 'date-fns';
 
