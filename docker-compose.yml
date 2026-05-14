@@ -1,0 +1,83 @@
+version: '3.8'
+
+services:
+  # PostgreSQL — mirrors AWS RDS
+  postgres:
+    image: postgres:15-alpine
+    container_name: healthcare_postgres
+    environment:
+      POSTGRES_DB: healthcare_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Hanees@2001
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d healthcare_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Backend API — Node.js Express (mirrors EC2)
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: healthcare_backend
+    environment:
+      NODE_ENV: development
+      PORT: 5000
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: healthcare_db
+      DB_USER: postgres
+      DB_PASSWORD: Hanees@2001
+      JWT_SECRET: local_dev_jwt_secret_change_in_production
+      FRONTEND_URL: http://localhost:3000
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: npm run dev
+
+  # Frontend — React.js
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: healthcare_frontend
+    environment:
+      REACT_APP_API_URL: http://localhost:5000/api
+      REACT_APP_ENV: development
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend/src:/app/src
+    depends_on:
+      - backend
+
+  # ML Anomaly Detector — Python Flask (mirrors Lambda)
+  anomaly-detector:
+    build:
+      context: ./lambda/anomaly-detector
+      dockerfile: Dockerfile
+    container_name: healthcare_anomaly_detector
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: healthcare_db
+      DB_USER: postgres
+      DB_PASSWORD: Hanees@2001
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  postgres_data:

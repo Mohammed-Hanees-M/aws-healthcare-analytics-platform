@@ -1,0 +1,58 @@
+# Node
+node_modules/
+npm-debug.log*
+.npm
+
+# Env files — never commit secrets
+.env
+.env.local
+.env.production
+
+# Build outputs
+build/
+dist/
+*.zip
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+*.pkl
+*.joblib
+
+# ML models (stored in S3)
+ml/models/*.pkl
+ml/models/*.joblib
+
+# Logs
+logs/
+*.log
+
+# Terraform state — use remote backend in production
+*.tfstate
+*.tfstate.backup
+.terraform/
+.terraform.lock.hcl
+
+# AWS credentials — NEVER commit
+.aws/
+kaggle.json
+*.pem
+*.key
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Test coverage
+coverage/
+.coverage
+htmlcov/
