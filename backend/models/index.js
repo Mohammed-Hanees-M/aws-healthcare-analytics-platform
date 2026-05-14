@@ -1,29 +1,18 @@
 const { Sequelize } = require('sequelize');
-const logger = require('../utils/logger');
 
-const sequelize = new Sequelize(
-  process.env.DB_NAME || 'healthcare_db',
-  process.env.DB_USER || 'postgres',
-  process.env.DB_PASSWORD || 'Hanees@2001',
-  {
-    host: process.env.DB_HOST || 'localhost',
-    port: process.env.DB_PORT || 5432,
-    dialect: 'postgres',
-    logging: (msg) => logger.debug(msg),
-    pool: {
-      max: 10,
-      min: 2,
-      acquire: 30000,
-      idle: 10000
-    },
-    dialectOptions: {
-      ssl: {
-        require: true,
-        rejectUnauthorized: false
-      }
+const sequelize = new Sequelize(process.env.DATABASE_URL, {
+  dialect: 'postgres',
+  protocol: 'postgres',
+  logging: false,
+  dialectOptions: {
+    ssl: {
+      require: true,
+      rejectUnauthorized: false
     }
   }
-);
+});
+
+module.exports = sequelize;
 
 // Model imports
 const User = require('./User')(sequelize);
