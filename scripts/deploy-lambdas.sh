@@ -52,10 +52,7 @@ deploy_lambda() {
       --timeout 300 \
       --memory-size 512 \
       --environment "Variables={
-        DB_HOST=${DB_HOST},
-        DB_NAME=${DB_NAME},
-        DB_USER=${DB_USER},
-        DB_PASSWORD=${DB_PASSWORD},
+        DATABASE_URL=${DATABASE_URL},
         S3_BUCKET_NAME=${S3_BUCKET_NAME},
         AWS_REGION=${REGION}
       }" \

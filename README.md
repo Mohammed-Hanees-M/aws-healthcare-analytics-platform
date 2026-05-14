@@ -123,7 +123,6 @@ psql -U postgres
 
 # Inside psql shell, run:
 CREATE DATABASE healthcare_db;
-CREATE USER postgres WITH PASSWORD 'Hanees@2001';
 GRANT ALL PRIVILEGES ON DATABASE healthcare_db TO postgres;
 \q
 
@@ -149,11 +148,7 @@ cp frontend/.env.example frontend/.env
 
 Edit `backend/.env`:
 ```
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=healthcare_db
-DB_USER=postgres
-DB_PASSWORD=Hanees@2001
+DATABASE_URL=postgres://postgres:Hanees@2001@localhost:5432/healthcare_db
 JWT_SECRET=your_super_secret_jwt_key_here_change_in_production
 PORT=5000
 AWS_REGION=us-east-1
