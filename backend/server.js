@@ -46,12 +46,17 @@ app.use(express.urlencoded({ extended: true }));
 app.use(morgan('combined', { stream: { write: msg => logger.info(msg.trim()) } }));
 
 // ─── Health Check ──────────────────────────────────────────────────────────────
-app.get('/health', (req, res) => {
+app.get('/', (req, res) => {
   res.json({
+    status: 'OK',
+    message: 'AWS Healthcare Analytics Platform API Running'
+  });
+});
+
+app.get('/health', (req, res) => {
+  res.status(200).json({
     status: 'healthy',
-    timestamp: new Date().toISOString(),
-    version: '1.0.0',
-    environment: process.env.NODE_ENV || 'development'
+    database: 'connected'
   });
 });
 
