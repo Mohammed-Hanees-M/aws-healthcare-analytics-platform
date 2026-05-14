@@ -5,7 +5,7 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 const compression = require('compression');
 const rateLimit = require('express-rate-limit');
-const { sequelize } = require('./models');
+const db = require('./models');
 const logger = require('./utils/logger');
 
 // Route imports
@@ -79,10 +79,10 @@ app.use((err, req, res, next) => {
 // ─── Database + Server Start ──────────────────────────────────────────────────
 async function startServer() {
   try {
-    await sequelize.authenticate();
+    await db.sequelize.authenticate();
     logger.info('✅ PostgreSQL connected successfully');
 
-    await sequelize.sync({ alter: false });
+    await db.sequelize.sync({ alter: false });
     logger.info('✅ Database models synced');
 
     app.listen(PORT, () => {
