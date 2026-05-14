@@ -27,13 +27,9 @@ try:
     from dotenv import load_dotenv
     load_dotenv(os.path.join(os.path.dirname(__file__), '..', 'backend', '.env'))
 DB_URL = os.environ.get('DATABASE_URL')
-DB_CONFIG = {
-    'host': os.environ.get('DB_HOST'),
-    'port': os.environ.get('DB_PORT'),
-    'dbname': os.environ.get('DB_NAME'),
-    'user': os.environ.get('DB_USER'),
-    'password': os.environ.get('DB_PASSWORD'),
-}
+if not DB_URL:
+    raise ValueError("DATABASE_URL must be set in environment")
+DB_CONFIG = {}
 
 WARDS = ['ICU', 'Cardiology', 'Oncology', 'Pediatrics', 'Emergency', 'General', 'Neurology', 'Orthopedics']
 PHYSICIANS = ['Dr. Sarah Chen', 'Dr. James Wilson', 'Dr. Priya Patel', 'Dr. Michael Lee', 'Dr. Anna Rodriguez']
