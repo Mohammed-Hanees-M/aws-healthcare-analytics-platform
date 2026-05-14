@@ -56,3 +56,20 @@ Thumbs.db
 coverage/
 .coverage
 htmlcov/
+# Mac/Linux temp
+*.tmp
+
+# Runtime
+pids
+*.pid
+*.seed
+
+# React cache
+.cache/
+
+# Next build artifacts (future-safe)
+.next/
+
+# Local database files
+*.sqlite
+*.db
