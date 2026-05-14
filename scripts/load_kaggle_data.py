@@ -26,9 +26,6 @@ import random
 try:
     from dotenv import load_dotenv
     load_dotenv(os.path.join(os.path.dirname(__file__), '..', 'backend', '.env'))
-except ImportError:
-    pass
-
 DB_URL = os.environ.get('DATABASE_URL')
 DB_CONFIG = {
     'host': os.environ.get('DB_HOST'),

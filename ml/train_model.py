@@ -89,12 +89,16 @@ def load_from_db() -> pd.DataFrame:
     from dotenv import load_dotenv
     load_dotenv('../backend/.env')
 
-    conn = psycopg2.connect(
-        host=os.environ['DB_HOST'],
-        dbname=os.environ['DB_NAME'],
-        user=os.environ['DB_USER'],
-        password=os.environ['DB_PASSWORD']
-    )
+    db_url = os.environ.get('DATABASE_URL')
+    if db_url:
+        conn = psycopg2.connect(db_url)
+    else:
+        conn = psycopg2.connect(
+            host=os.environ.get('DB_HOST'),
+            dbname=os.environ.get('DB_NAME'),
+            user=os.environ.get('DB_USER'),
+            password=os.environ.get('DB_PASSWORD')
+        )
     query = f"""
         SELECT {', '.join(VITAL_FEATURES)}, is_anomaly
         FROM vital_records

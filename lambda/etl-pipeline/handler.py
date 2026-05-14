@@ -19,12 +19,15 @@ logger.setLevel(logging.INFO)
 
 # ─── Database Connection ──────────────────────────────────────────────────────
 def get_db_connection():
+    db_url = os.environ.get('DATABASE_URL')
+    if db_url:
+        return psycopg2.connect(db_url)
     return psycopg2.connect(
-        host=os.environ['DB_HOST'],
-        port=os.environ.get('DB_PORT', 5432),
-        dbname=os.environ['DB_NAME'],
-        user=os.environ['DB_USER'],
-        password=os.environ['DB_PASSWORD'],
+        host=os.environ.get('DB_HOST'),
+        port=os.environ.get('DB_PORT'),
+        dbname=os.environ.get('DB_NAME'),
+        user=os.environ.get('DB_USER'),
+        password=os.environ.get('DB_PASSWORD'),
         sslmode='require' if os.environ.get('NODE_ENV') == 'production' else 'prefer'
     )
 
