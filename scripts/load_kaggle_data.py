@@ -29,12 +29,13 @@ try:
 except ImportError:
     pass
 
+DB_URL = os.environ.get('DATABASE_URL')
 DB_CONFIG = {
-    'host': os.environ.get('DB_HOST', 'localhost'),
-    'port': int(os.environ.get('DB_PORT', 5432)),
-    'dbname': os.environ.get('DB_NAME', 'healthcare_db'),
-    'user': os.environ.get('DB_USER', 'postgres'),
-    'password': os.environ.get('DB_PASSWORD', 'Hanees@2001'),
+    'host': os.environ.get('DB_HOST'),
+    'port': os.environ.get('DB_PORT'),
+    'dbname': os.environ.get('DB_NAME'),
+    'user': os.environ.get('DB_USER'),
+    'password': os.environ.get('DB_PASSWORD'),
 }
 
 WARDS = ['ICU', 'Cardiology', 'Oncology', 'Pediatrics', 'Emergency', 'General', 'Neurology', 'Orthopedics']
@@ -44,6 +45,8 @@ LAST_NAMES = ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Mille
 
 
 def get_conn():
+    if DB_URL:
+        return psycopg2.connect(DB_URL)
     return psycopg2.connect(**DB_CONFIG)
 
 

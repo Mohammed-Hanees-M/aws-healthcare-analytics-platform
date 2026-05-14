@@ -12,7 +12,6 @@ const sequelize = new Sequelize(process.env.DATABASE_URL, {
   }
 });
 
-module.exports = sequelize;
 
 // Model imports
 const User = require('./User')(sequelize);

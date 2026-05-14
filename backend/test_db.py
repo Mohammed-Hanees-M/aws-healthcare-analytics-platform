@@ -1,14 +1,12 @@
 import psycopg2
 
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
 try:
-    conn = psycopg2.connect(
-        host="healthcare-db.ci5mg04u4s12.us-east-1.rds.amazonaws.com",
-        port=5432,
-        database="postgres",
-        user="postgres",
-        password="HealthCare2026",
-        sslmode="require"
-    )
+    conn = psycopg2.connect(os.getenv('DATABASE_URL'))
 
     print("✅ Connection successful!")
 

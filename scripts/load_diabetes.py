@@ -12,15 +12,20 @@ from dotenv import dotenv_values
 _env_path = os.path.join(os.path.dirname(__file__), '..', 'backend', '.env')
 _cfg = dotenv_values(_env_path)
 
-# Database connection — AWS RDS PostgreSQL
-conn = psycopg2.connect(
-    host=_cfg.get('DB_HOST', 'localhost'),
-    port=int(_cfg.get('DB_PORT', 5432)),
-    dbname=_cfg.get('DB_NAME', 'postgres'),
-    user=_cfg.get('DB_USER', 'postgres'),
-    password=_cfg.get('DB_PASSWORD', ''),
-    sslmode='require'
-)
+# Database connection
+db_url = _cfg.get('DATABASE_URL') or os.environ.get('DATABASE_URL')
+
+if db_url:
+    conn = psycopg2.connect(db_url)
+else:
+    conn = psycopg2.connect(
+        host=_cfg.get('DB_HOST'),
+        port=int(_cfg.get('DB_PORT', 5432)),
+        dbname=_cfg.get('DB_NAME'),
+        user=_cfg.get('DB_USER'),
+        password=_cfg.get('DB_PASSWORD', ''),
+        sslmode='require'
+    )
 
 print("✅ Connected to database")
 
