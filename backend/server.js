@@ -24,26 +24,50 @@ app.use(helmet({
   crossOriginResourcePolicy: { policy: 'cross-origin' }
 }));
 
+// ✅ UPDATED CORS CONFIG
+const allowedOrigins = [
+  'http://localhost:3000',
+  'https://aws-healthcare-analytics-platform.vercel.app'
+];
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  origin: function (origin, callback) {
+    // Allow requests with no origin (Postman/mobile apps)
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    } else {
+      return callback(new Error('CORS not allowed'));
+    }
+  },
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
+// IMPORTANT FOR RAILWAY + VERCEL
+app.set('trust proxy', 1);
+
 // Rate limiting — HIPAA best practice
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
+  windowMs: 15 * 60 * 1000,
   max: 100,
   message: { error: 'Too many requests, please try again later.' }
 });
+
 app.use('/api/', limiter);
 
 // ─── General Middleware ────────────────────────────────────────────────────────
 app.use(compression());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
-app.use(morgan('combined', { stream: { write: msg => logger.info(msg.trim()) } }));
+
+app.use(morgan('combined', {
+  stream: {
+    write: msg => logger.info(msg.trim())
+  }
+}));
 
 // ─── Health Check ──────────────────────────────────────────────────────────────
 app.get('/', (req, res) => {
@@ -70,14 +94,20 @@ app.use('/api/upload', uploadRoutes);
 
 // ─── 404 Handler ──────────────────────────────────────────────────────────────
 app.use('*', (req, res) => {
-  res.status(404).json({ error: 'Route not found' });
+  res.status(404).json({
+    error: 'Route not found'
+  });
 });
 
 // ─── Global Error Handler ─────────────────────────────────────────────────────
 app.use((err, req, res, next) => {
   logger.error(`${err.status || 500} - ${err.message} - ${req.originalUrl}`);
+
   res.status(err.status || 500).json({
-    error: process.env.NODE_ENV === 'production' ? 'Internal server error' : err.message
+    error:
+      process.env.NODE_ENV === 'production'
+        ? 'Internal server error'
+        : err.message
   });
 });
 
@@ -94,6 +124,7 @@ async function startServer() {
       logger.info(`🚀 Healthcare API running on port ${PORT}`);
       logger.info(`📊 Environment: ${process.env.NODE_ENV || 'development'}`);
     });
+
   } catch (error) {
     logger.error('❌ Failed to start server:', error);
     process.exit(1);
