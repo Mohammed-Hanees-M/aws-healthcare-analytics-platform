@@ -1,29 +1,25 @@
 import pandas as pd
+from dotenv import load_dotenv
+import os
 import psycopg2
 from psycopg2.extras import execute_values
 import uuid
 from datetime import datetime, timedelta
 import random
-import os
-from dotenv import dotenv_values
 
-# Load credentials from backend/.env so this script targets the same
-# AWS RDS instance that the Node.js backend queries.
-_env_path = os.path.join(os.path.dirname(__file__), '..', 'backend', '.env')
-_cfg = dotenv_values(_env_path)
+load_dotenv()
 
-# Database connection
-db_url = _cfg.get('DATABASE_URL') or os.environ.get('DATABASE_URL')
+DATABASE_URL = os.getenv("DATABASE_URL")
 
-if not db_url:
-    raise ValueError("DATABASE_URL must be set in environment")
-conn = psycopg2.connect(db_url)
+print(DATABASE_URL)
 
-print("✅ Connected to database")
+conn = psycopg2.connect(DATABASE_URL)
+
+print("Connected to database")
 
 # Read the CSV
 df = pd.read_csv(r"C:\Users\hanee\Downloads\archive\diabetic_data.csv")
-print(f"✅ Loaded {len(df)} rows from diabetic_data.csv")
+print(f"Loaded {len(df)} rows from diabetic_data.csv")
 print(f"   Columns: {list(df.columns)[:8]}...")
 
 WARDS = ['ICU', 'Cardiology', 'Endocrinology', 'General', 'Emergency', 'Pediatrics']
@@ -95,7 +91,7 @@ inserted = cursor.rowcount
 conn.commit()
 cursor.close()
 
-print(f"✅ Inserted {inserted} diabetic patients into database")
+print(f"Inserted {inserted} diabetic patients into database")
 print(f"   Dataset source: diabetes_130_hospitals (Kaggle)")
 print(f"   Total loaded: 500 records from {len(df)} available")
 
@@ -152,6 +148,6 @@ conn.commit()
 cursor.close()
 conn.close()
 
-print(f"✅ Generated {v_count} vital records for diabetic patients")
-print(f"\n🎉 Done! Refresh your dashboard at http://localhost:3000")
+print(f"Generated {v_count} vital records for diabetic patients")
+print(f"\nDone! Refresh your dashboard at http://localhost:3000")
 print(f"   You should now see 600+ total patients (100 original + 500 diabetic)")

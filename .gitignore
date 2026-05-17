@@ -73,3 +73,29 @@ pids
 # Local database files
 *.sqlite
 *.db
+
+# Node
+node_modules/
+npm-debug.log
+
+# Python
+venv/
+__pycache__/
+*.pyc
+
+# Environment files
+.env
+backend/.env
+frontend/.env
+
+# Logs
+logs/
+*.log
+
+# Build
+build/
+dist/
+
+# OS files
+.DS_Store
+Thumbs.db
